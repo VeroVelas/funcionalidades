@@ -5,8 +5,6 @@ import 'package:speech_to_text/speech_recognition_error.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 
-void main() => runApp(const SpeechSampleApp());
-
 class SpeechSampleApp extends StatefulWidget {
   const SpeechSampleApp({Key? key}) : super(key: key);
 
@@ -37,10 +35,6 @@ class _SpeechSampleAppState extends State<SpeechSampleApp> {
     super.initState();
   }
 
-  /// This initializes SpeechToText. That only has to be done
-  /// once per application, though calling it again is harmless
-  /// it also does nothing. The UX of the sample app ensures that
-  /// it can only be called once.
   Future<void> initSpeechState() async {
     _logEvent('Initialize');
     try {
@@ -50,15 +44,11 @@ class _SpeechSampleAppState extends State<SpeechSampleApp> {
         debugLogging: _logEvents,
       );
       if (hasSpeech) {
-        // Get the list of languages installed on the supporting platform so they
-        // can be displayed in the UI for selection by the user.
         _localeNames = await speech.locales();
-
         var systemLocale = await speech.systemLocale();
         _currentLocaleId = systemLocale?.localeId ?? '';
       }
       if (!mounted) return;
-
       setState(() {
         _hasSpeech = hasSpeech;
       });
@@ -72,47 +62,43 @@ class _SpeechSampleAppState extends State<SpeechSampleApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Speech to Text Example'),
-        ),
-        body: Column(children: [
-          const HeaderWidget(),
-          Column(
-            children: <Widget>[
-              InitSpeechWidget(_hasSpeech, initSpeechState),
-              SpeechControlWidget(_hasSpeech, speech.isListening,
-                  startListening, stopListening, cancelListening),
-              SessionOptionsWidget(
-                _currentLocaleId,
-                _switchLang,
-                _localeNames,
-                _logEvents,
-                _switchLogging,
-                _pauseForController,
-                _listenForController,
-                _onDevice,
-                _switchOnDevice,
-              ),
-            ],
-          ),
-          Expanded(
-            flex: 4,
-            child: RecognitionResultsWidget(lastWords: lastWords, level: level),
-          ),
-          Expanded(
-            flex: 1,
-            child: ErrorWidget(lastError: lastError),
-          ),
-          SpeechStatusWidget(speech: speech),
-        ]),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Speech to Text Example'),
       ),
+      body: Column(children: [
+        const HeaderWidget(),
+        Column(
+          children: <Widget>[
+            InitSpeechWidget(_hasSpeech, initSpeechState),
+            SpeechControlWidget(_hasSpeech, speech.isListening, startListening,
+                stopListening, cancelListening),
+            SessionOptionsWidget(
+              _currentLocaleId,
+              _switchLang,
+              _localeNames,
+              _logEvents,
+              _switchLogging,
+              _pauseForController,
+              _listenForController,
+              _onDevice,
+              _switchOnDevice,
+            ),
+          ],
+        ),
+        Expanded(
+          flex: 4,
+          child: RecognitionResultsWidget(lastWords: lastWords, level: level),
+        ),
+        Expanded(
+          flex: 1,
+          child: ErrorWidget(lastError: lastError),
+        ),
+        SpeechStatusWidget(speech: speech),
+      ]),
     );
   }
 
-  // This is called each time the users wants to start a new speech
-  // recognition session
   void startListening() {
     _logEvent('start listening');
     lastWords = '';
@@ -120,16 +106,13 @@ class _SpeechSampleAppState extends State<SpeechSampleApp> {
     final pauseFor = int.tryParse(_pauseForController.text);
     final listenFor = int.tryParse(_listenForController.text);
     final options = SpeechListenOptions(
-        onDevice: _onDevice,
-        listenMode: ListenMode.confirmation,
-        cancelOnError: true,
-        partialResults: true,
-        autoPunctuation: true,
-        enableHapticFeedback: true);
-    // Note that `listenFor` is the maximum, not the minimum, on some
-    // systems recognition will be stopped before this value is reached.
-    // Similarly `pauseFor` is a maximum not a minimum and may be ignored
-    // on some devices.
+      onDevice: _onDevice,
+      listenMode: ListenMode.confirmation,
+      cancelOnError: true,
+      partialResults: true,
+      autoPunctuation: true,
+      enableHapticFeedback: true,
+    );
     speech.listen(
       onResult: resultListener,
       listenFor: Duration(seconds: listenFor ?? 30),
@@ -157,8 +140,6 @@ class _SpeechSampleAppState extends State<SpeechSampleApp> {
     });
   }
 
-  /// This callback is invoked each time new recognition results are
-  /// available after `listen` is called.
   void resultListener(SpeechRecognitionResult result) {
     _logEvent(
         'Result listener final: ${result.finalResult}, words: ${result.recognizedWords}');
@@ -170,7 +151,6 @@ class _SpeechSampleAppState extends State<SpeechSampleApp> {
   void soundLevelListener(double level) {
     minSoundLevel = min(minSoundLevel, level);
     maxSoundLevel = max(maxSoundLevel, level);
-    // _logEvent('sound level $level: $minSoundLevel - $maxSoundLevel ');
     setState(() {
       this.level = level;
     });
@@ -196,7 +176,6 @@ class _SpeechSampleAppState extends State<SpeechSampleApp> {
     setState(() {
       _currentLocaleId = selectedVal;
     });
-    debugPrint(selectedVal);
   }
 
   void _logEvent(String eventDescription) {
@@ -219,7 +198,6 @@ class _SpeechSampleAppState extends State<SpeechSampleApp> {
   }
 }
 
-/// Displays the most recently recognized words and the sound level.
 class RecognitionResultsWidget extends StatelessWidget {
   const RecognitionResultsWidget({
     Key? key,
@@ -301,8 +279,6 @@ class HeaderWidget extends StatelessWidget {
   }
 }
 
-/// Display the current error status from the speech
-/// recognizer
 class ErrorWidget extends StatelessWidget {
   const ErrorWidget({
     Key? key,
@@ -329,11 +305,9 @@ class ErrorWidget extends StatelessWidget {
   }
 }
 
-/// Controls to start and stop speech recognition
 class SpeechControlWidget extends StatelessWidget {
-  const SpeechControlWidget(this.hasSpeech, this.isListening,
-      this.startListening, this.stopListening, this.cancelListening,
-      {Key? key})
+  const SpeechControlWidget(this.hasSpeech, this.isListening, this.startListening,
+      this.stopListening, this.cancelListening, {Key? key})
       : super(key: key);
 
   final bool hasSpeech;
@@ -473,7 +447,6 @@ class InitSpeechWidget extends StatelessWidget {
   }
 }
 
-/// Display the current status of the listener
 class SpeechStatusWidget extends StatelessWidget {
   const SpeechStatusWidget({
     Key? key,

@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
       home: HomeScreen(),
       routes: {
         '/geolocator': (context) => GeolocatorView(),
-        '/sensorplus': (context) => Snake(),
+        '/sensorplus': (context) => SensorPlus(),
         '/text_to_speech': (context) => TextToSpeechScreen(),
         '/speech_to_text': (context) => SpeechSampleApp(),
         '/qr_scanner': (context) => QRScannerView(),
