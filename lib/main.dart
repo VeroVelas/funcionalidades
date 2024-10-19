@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'screens/geolocator.dart';
 import 'screens/sensorplus.dart';
 import 'screens/text_to_speech.dart';
-import 'screens/speech_to_text.dart';
+import 'screens/speech_to_text.dart';  // Asegúrate de que este import esté correctamente referenciado.
 import 'screens/qr_scanner.dart';
 import 'screens/dev_team.dart';
 
@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
         '/geolocator': (context) => GeolocatorView(),
         '/sensorplus': (context) => SensorPlus(),
         '/text_to_speech': (context) => TextToSpeechScreen(),
-        '/speech_to_text': (context) => SpeechSampleApp(),
+        '/speech_to_text': (context) => SpeechToTextScreen(),  // Asegúrate de que esta ruta sea correcta
         '/qr_scanner': (context) => QRScannerView(),
         '/dev_team': (context) => DevTeam(),
       },
