@@ -19,6 +19,7 @@ class _SpeechToTextScreenState extends State<SpeechToTextScreen> {
     _initSpeech();
   }
 
+  // Inicializar el reconocimiento de voz
   void _initSpeech() async {
     _speech = stt.SpeechToText();
     bool available = await _speech.initialize(
@@ -43,6 +44,7 @@ class _SpeechToTextScreenState extends State<SpeechToTextScreen> {
     });
   }
 
+  // Función para iniciar o detener el reconocimiento de voz
   void _listen() async {
     if (_speechEnabled && !_isListening) {
       setState(() => _isListening = true);
@@ -57,6 +59,7 @@ class _SpeechToTextScreenState extends State<SpeechToTextScreen> {
     }
   }
 
+  // Limpiar el campo de texto
   void _clearText() {
     setState(() {
       _textController.clear();
@@ -77,13 +80,16 @@ class _SpeechToTextScreenState extends State<SpeechToTextScreen> {
               controller: _textController,
               decoration: InputDecoration(
                 hintText: 'Texto reconocido',
+                border: OutlineInputBorder(),
               ),
             ),
+            SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 FloatingActionButton(
                   onPressed: _speechEnabled ? _listen : null,
+                  backgroundColor: _isListening ? Colors.red : Colors.blue,
                   child: Icon(_isListening ? Icons.mic : Icons.mic_none),
                 ),
                 ElevatedButton(

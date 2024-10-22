@@ -12,8 +12,6 @@ class _TextToSpeechScreenState extends State<TextToSpeechScreen> {
   late FlutterTts flutterTts;
   String? _newVoiceText;
   double volume = 0.5;
-  double pitch = 1.0;
-  double rate = 0.5;
 
   TtsState ttsState = TtsState.stopped;
 
@@ -49,8 +47,6 @@ class _TextToSpeechScreenState extends State<TextToSpeechScreen> {
 
   Future<void> _speak() async {
     await flutterTts.setVolume(volume);
-    await flutterTts.setSpeechRate(rate);
-    await flutterTts.setPitch(pitch);
 
     if (_newVoiceText != null && _newVoiceText!.isNotEmpty) {
       await flutterTts.speak(_newVoiceText!);
@@ -109,7 +105,7 @@ class _TextToSpeechScreenState extends State<TextToSpeechScreen> {
               ],
             ),
             const SizedBox(height: 20),
-            _buildSliders(),
+            _buildSliders(), // Solo el control de volumen
           ],
         ),
       ),
@@ -130,30 +126,6 @@ class _TextToSpeechScreenState extends State<TextToSpeechScreen> {
           max: 1.0,
           divisions: 10,
           label: "Volumen: $volume",
-        ),
-        Slider(
-          value: pitch,
-          onChanged: (newPitch) {
-            setState(() {
-              pitch = newPitch;
-            });
-          },
-          min: 0.5,
-          max: 2.0,
-          divisions: 15,
-          label: "Tono: $pitch",
-        ),
-        Slider(
-          value: rate,
-          onChanged: (newRate) {
-            setState(() {
-              rate = newRate;
-            });
-          },
-          min: 0.0,
-          max: 1.0,
-          divisions: 10,
-          label: "Velocidad: $rate",
         ),
       ],
     );

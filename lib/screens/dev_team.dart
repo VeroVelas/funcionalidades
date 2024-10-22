@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class DevTeam extends StatelessWidget {
-  final String githubUrl = 'https://github.com/Darioantonio20/app_movil_act';
+  final String githubUrl = 'https://github.com/VeroVelas/funcionalidades.git';
 
   void _launchURL() async {
     if (await canLaunch(githubUrl)) {
@@ -32,13 +32,13 @@ class DevTeam extends StatelessWidget {
               ),
               SizedBox(height: 16),
               Text(
-                'Darío Antonio Gutiérrez Álvarez',
+                'veronica velasco jimenez',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: 8),
               Text(
-                'Desarrollador Frontend',
+                'IDS',
                 style: TextStyle(fontSize: 18),
                 textAlign: TextAlign.center,
               ),

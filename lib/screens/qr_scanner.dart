@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:flutter/foundation.dart';
-import 'package:url_launcher/url_launcher.dart'; // Importa url_launcher para abrir enlaces
 
 class QRScannerView extends StatefulWidget {
   @override
@@ -22,19 +21,11 @@ class _QRScannerViewState extends State<QRScannerView> {
     super.dispose();
   }
 
-  // Función para verificar si el string es un URL
-  bool _isValidURL(String? url) {
-    if (url == null) return false;
-    return Uri.tryParse(url)?.hasAbsolutePath ?? false;
-  }
-
-  // Función para abrir el enlace en el navegador
-  Future<void> _launchURL(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'No se pudo abrir el enlace: $url';
-    }
+  // Función para validar si el string es una matrícula (en este caso, asumimos que es un número)
+  bool _isValidMatricula(String? data) {
+    if (data == null) return false;
+    final matriculaRegExp = RegExp(r'^[0-9]+$'); // Asume que la matrícula solo tiene números
+    return matriculaRegExp.hasMatch(data);
   }
 
   @override
@@ -56,10 +47,10 @@ class _QRScannerViewState extends State<QRScannerView> {
             flex: 1,
             child: Center(
               child: (result != null)
-                  ? Text('Código QR: ${describeEnum(result!.format)} - ${result!.code}')
+                  ? Text('Matrícula escaneada: ${result!.code}') // Muestra la matrícula
                   : Text('Escanea un código QR'),
             ),
-          )
+          ),
         ],
       ),
     );
@@ -74,15 +65,16 @@ class _QRScannerViewState extends State<QRScannerView> {
       if (_isScanning) {
         setState(() {
           result = scanData;
-          _isScanning = false; // Detiene el escaneo para evitar múltiples redirecciones
+          _isScanning = false; // Detiene el escaneo para evitar múltiples lecturas
         });
 
         // Pausa la cámara para evitar reescaneo continuo
         controller.pauseCamera();
 
-        // Si el código escaneado es una URL válida, redirigir automáticamente
-        if (_isValidURL(result?.code)) {
-          await _launchURL(result!.code!);
+        // Validar si el QR escaneado es una matrícula válida
+        if (_isValidMatricula(result?.code)) {
+          // Aquí puedes hacer cualquier acción adicional con la matrícula si lo deseas
+          print('Matrícula escaneada: ${result!.code}');
         }
 
         // Opcional: Si quieres cerrar la pantalla después de escanear
